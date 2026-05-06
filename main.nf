@@ -13,7 +13,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RGREAT_LOCAL  } from './workflows/rgreat_local'
+//include { RGREAT_LOCAL  } from './workflows/rgreat_local'
+include { fromSamplesheet } from 'plugin/nf-validation'
+	
+
+include { LOCAL_GREAT  } from './modules/local_great.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -23,21 +27,7 @@ include { RGREAT_LOCAL  } from './workflows/rgreat_local'
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_RGREAT_LOCAL {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    RGREAT_LOCAL (
-        samplesheet,
-        params.outdir,
-    )
-}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -47,12 +37,15 @@ workflow NFCORE_RGREAT_LOCAL {
 workflow {
 
     main:
+    fg_channel = Channel.fromSamplesheet("input")
+    fg_channel.view()
 
-    //
-    // WORKFLOW: Run main workflow
-    //
-    NFCORE_RGREAT_LOCAL (
-        params.input
+    bg_channel = Channel.value(file(params.background))
+    
+    LOCAL_GREAT(
+        fg_channel,
+        bg_channel,
+        "MF"
     )
 }
 
