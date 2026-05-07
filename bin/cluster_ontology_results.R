@@ -65,8 +65,7 @@ add_clusters <- function(df, padj_thresh, h) {
   if (nrow(cluster_map) == 0L) {
     return(df %>% mutate(
       cluster          = NA_integer_,
-      cluster_rep      = NA_character_,
-      cluster_rep_desc = NA_character_
+      cluster_rep      = NA_character_
     ))
   }
 
@@ -77,7 +76,7 @@ add_clusters <- function(df, padj_thresh, h) {
     group_by(cluster) %>%
     slice_min(order_by = tibble(p_adjust, p_adjust_hyper), n = 1L, with_ties = FALSE) %>%
     ungroup() %>%
-    select(cluster, cluster_rep = id, cluster_rep_desc = description)
+    select(cluster, cluster_rep = id)
 
   df %>%
     left_join(cluster_map, by = "id") %>%
@@ -91,7 +90,7 @@ result <- data %>%
 
 cluster_summary <- result %>%
   filter(!is.na(cluster)) %>%
-  group_by(Ontology, cluster, cluster_rep, cluster_rep_desc) %>%
+  group_by(Ontology, cluster, cluster_rep) %>%
   summarise(
     n_terms              = n_distinct(id),
     n_conditions         = n_distinct(Condition),

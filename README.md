@@ -28,7 +28,7 @@ old_bias,./data/old_bias_peaks.bed
 **`gene_set_list.csv`** — one row per ontology or custom gene set. `path` is required for `.gmt`/`.rds` files and left empty for built-in rGREAT ontologies (`BP`, `MF`, `CP`). `min_set_size` defaults to 5 if omitted.
 
 ```csv
-name,path,min_set_size
+ontology_name,path,min_set_size
 BP,,
 MF,,
 CP,,
@@ -38,7 +38,7 @@ MySingleGenes,./assets/my_sets.rds,1
 
 | Column | Description |
 |---|---|
-| `name` | Identifier used in output filenames and the `Ontology` metadata column |
+| `ontology_name` | Identifier used in output filenames and the `Ontology` metadata column |
 | `path` | Path to a `.gmt` or `.rds` gene set file; leave empty for built-in ontologies |
 | `min_set_size` | Minimum number of genes required in a gene set (default: 5) |
 

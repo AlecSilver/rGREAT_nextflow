@@ -1,6 +1,6 @@
 process LOCAL_GREAT {
 
-    tag "${meta.sample}_${meta.name}"
+    tag "${meta.sample}_${meta.ontology_name}"
 
     publishDir "${params.outdir}/GREAT_results", mode: 'copy', pattern: "*_localGREAT.tsv"
     publishDir "${params.outdir}/gene_region_links", mode: 'copy', pattern: "*_gene_region_links.tsv"
@@ -15,9 +15,9 @@ process LOCAL_GREAT {
 
 
     output:
-    tuple val(meta), path("${meta.sample}_${meta.name}_localGREAT.tsv"), emit: results
-    path "${meta.sample}_${meta.name}_gene_region_links.tsv"
-    path "${meta.sample}_${meta.name}_great_job.rds"
+    tuple val(meta), path("${meta.sample}_${meta.ontology_name}_localGREAT.tsv"), emit: results
+    path "${meta.sample}_${meta.ontology_name}_gene_region_links.tsv"
+    path "${meta.sample}_${meta.ontology_name}_great_job.rds"
 
 
 
@@ -26,7 +26,7 @@ process LOCAL_GREAT {
     local_rGREAT.R \
         ${fg_bed} \
         ${bg_bed} \
-        ${meta.name} \
+        ${meta.ontology_name} \
         ${meta.sample} \
         ./ \
         ${set_path} \

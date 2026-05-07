@@ -7,11 +7,11 @@
   "items": {
     "type": "object",
     "properties": {
-      "name": {
+      "ontology_name": {
         "type": "string",
         "pattern": "^\\S+$",
-        "errorMessage": "Name must be provided and cannot contain spaces",
-        "meta": ["name"]
+        "errorMessage": "ontology_name must be provided and cannot contain spaces",
+        "meta": ["ontology_name"]
       },
       "path": {
         "type": "string",
@@ -27,6 +27,6 @@
         "meta": ["min_set_size"]
       }
     },
-    "required": ["name", "path"]
+    "required": ["ontology_name", "path"]
   }
 }

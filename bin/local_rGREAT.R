@@ -97,7 +97,7 @@ min_set_size <- if (length(args) >= 7 && nchar(args[7]) > 0) as.integer(args[7])
 
 # file paths are loaded by extension (.rds or .gmt).
 ext <- tools::file_ext(ont_path)
-if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
+ont <- if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
 
 
 

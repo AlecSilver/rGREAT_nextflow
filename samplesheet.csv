@@ -1,4 +1,4 @@
 ﻿sample,path
-test_1,./assets/beds/random_regions_1.bed
-test_2,./assets/beds/random_regions_2.bed
-test_3,./assets/beds/random_regions_3.bed
+2wk_f,./assets/beds/2wk_FEMALE_STRONG.bed
+3wk_f,./assets/beds/3wk_FEMALE_STRONG.bed
+
