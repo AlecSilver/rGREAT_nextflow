@@ -86,20 +86,24 @@ if (length(args) < 3) {
   stop("Usage: run_local_great.R <foreground.bed> <background.bed> <BP|CP|MF|SG> <output_prefix> <out_folder>")
 }
 # SG stands for single gene, and will test all genes that had differential expression p<= 0.05
-fg_file <- args[1]
-bg_file <- args[2]
-ont_str <- args[3]
-out_prefix <- args[4]
-out_path <- args[5]
-ont_path <- args[6]
+fg_file      <- args[1]
+bg_file      <- args[2]
+ont_str      <- args[3]
+out_prefix   <- args[4]
+out_path     <- args[5]
+ont_path     <- args[6]
+min_set_size <- if (length(args) >= 7 && nchar(args[7]) > 0) as.integer(args[7]) else 5L
 
-#read in apropriate gene set
-ont <- switch( ont_str,
-               "SG" = readRDS("ref/mm9_all_entrez_one_gene_per_set.rds") ,
-               "BP" = ont_str,
-               "MF" = ont_str,
-               "CP" = ont_str, 
-               read_gmt(ont_path)
+# Load gene set: built-in ontology strings pass through as-is;
+# file paths are loaded by extension (.rds or .gmt).
+ont <- switch(ont_str,
+  "BP" = ont_str,
+  "MF" = ont_str,
+  "CP" = ont_str,
+  {
+    ext <- tools::file_ext(ont_path)
+    if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
+  }
 )
 
 
@@ -116,11 +120,11 @@ cat("Running GREAT locally...\n")
 
 
 res <- great(
-  gr                  =  fg,
-  background = bg,
-  gene_sets           = ont,          # GO Biological Process
-  tss_source          = "mm9",            # mm9 TxDb
-  min_gene_set_size = ifelse(ont_str == "SG", 1, 5) #use default onless individual genes
+  gr                = fg,
+  background        = bg,
+  gene_sets         = ont,
+  tss_source        = "mm9",
+  min_gene_set_size = min_set_size
 )
 
 

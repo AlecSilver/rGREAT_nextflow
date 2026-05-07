@@ -29,6 +29,7 @@ process LOCAL_GREAT {
         ${meta.name} \
         ${meta.sample} \
         ./ \
-        ${set_path}
+        ${set_path} \
+        ${meta.min_set_size ?: 5}
     """
 }

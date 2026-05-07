@@ -70,11 +70,12 @@ add_clusters <- function(df, padj_thresh, h) {
     ))
   }
 
-  # Representative term per cluster: lowest p_value seen in any condition
+  # Representative term per cluster: best p_adjust across any condition,
+  # with p_adjust_hyper as tie-breaker
   rep_map <- df %>%
     inner_join(cluster_map, by = "id") %>%
     group_by(cluster) %>%
-    slice_min(p_value, n = 1L, with_ties = FALSE) %>%
+    slice_min(order_by = tibble(p_adjust, p_adjust_hyper), n = 1L, with_ties = FALSE) %>%
     ungroup() %>%
     select(cluster, cluster_rep = id, cluster_rep_desc = description)
 

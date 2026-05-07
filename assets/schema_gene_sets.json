@@ -15,9 +15,16 @@
       },
       "path": {
         "type": "string",
-        "pattern": "\\.gmt$",
+        "pattern": "\\.(gmt|rds)$",
         "format": "file-path",
-        "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+        "errorMessage": "Gene set file must have extension '.gmt' or '.rds'"
+      },
+      "min_set_size": {
+        "type": "integer",
+        "default": 5,
+        "minimum": 1,
+        "errorMessage": "min_set_size must be a positive integer",
+        "meta": ["min_set_size"]
       }
     },
     "required": ["name", "path"]
