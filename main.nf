@@ -17,6 +17,7 @@
 include { fromSamplesheet } from 'plugin/nf-validation'
 include { LOCAL_GREAT  } from './modules/local_great.nf'
 include { COMBINE_GREAT_RESULTS  } from './modules/combine_great_results.nf'
+include { CLUSTER_ONTOLOGY_RESULTS } from './modules/cluster_ontology_results.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -70,7 +71,9 @@ workflow {
 
     all_results.view()
     COMBINE_GREAT_RESULTS(all_results)
-        
+
+    CLUSTER_ONTOLOGY_RESULTS(COMBINE_GREAT_RESULTS.out.results)
+
 }
 
 /*
