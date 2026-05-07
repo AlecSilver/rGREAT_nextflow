@@ -23,7 +23,7 @@ jaccard_sim <- function(a, b) {
 
 # For each term, union gene sets across all conditions so clustering uses
 # stable gene-set identity rather than condition-specific peak linkage.
-aggregate_gene_sets <- function(df, padj_thresh) {
+aggregate_gene_sets <- function(df) {
   df %>%
     filter(!is.na(genes), nchar(genes) > 0L) %>%
     group_by(id) %>%
@@ -31,8 +31,7 @@ aggregate_gene_sets <- function(df, padj_thresh) {
       genes_union = list(unique(unlist(str_split(genes, ",\\s*")))),
       best_padj   = min(p_adjust, na.rm = TRUE),
       .groups     = "drop"
-    ) %>%
-    filter(best_padj <= padj_thresh)
+    )
 }
 
 build_cluster_map <- function(term_stats, h) {
@@ -58,8 +57,8 @@ build_cluster_map <- function(term_stats, h) {
   tibble(id = names(labels), cluster = as.integer(labels))
 }
 
-add_clusters <- function(df, padj_thresh, h) {
-  term_stats  <- aggregate_gene_sets(df, padj_thresh)
+add_clusters <- function(df, h) {
+  term_stats  <- aggregate_gene_sets(df)
   cluster_map <- build_cluster_map(term_stats, h)
 
   if (nrow(cluster_map) == 0L) {
@@ -85,8 +84,10 @@ add_clusters <- function(df, padj_thresh, h) {
 
 result <- data %>%
   group_by(Ontology) %>%
-  group_modify(~ add_clusters(.x, padj_cutoff, cluster_height)) %>%
-  ungroup()
+  filter(p_adjust <= padj_cutoff, p_adjust_hyper <= padj_cutoff) %>%
+  group_modify(~ add_clusters(.x, cluster_height)) %>%
+  ungroup()%>%
+  relocate(any_of(c("cluster","cluster_rep")), .after = id) 
 
 cluster_summary <- result %>%
   filter(!is.na(cluster)) %>%
@@ -98,7 +99,7 @@ cluster_summary <- result %>%
     best_fold_enrichment = max(fold_enrichment, na.rm = TRUE),
     .groups              = "drop"
   ) %>%
-  arrange(Ontology, cluster)
+  arrange(Ontology, cluster) 
 
 write_csv(result,          "clustered_results.csv")
 write_csv(cluster_summary, "cluster_summary.csv")
