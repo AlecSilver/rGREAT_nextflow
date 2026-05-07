@@ -15,9 +15,8 @@
 
 //include { RGREAT_LOCAL  } from './workflows/rgreat_local'
 include { fromSamplesheet } from 'plugin/nf-validation'
-	
-
 include { LOCAL_GREAT  } from './modules/local_great.nf'
+include { COMBINE_GREAT_RESULTS  } from './modules/combine_great_results.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -46,7 +45,12 @@ workflow {
     gene_set_channel = Channel.fromSamplesheet("gene_set_list")
     //gene_set_channel.view()
 
+    // combine the two channels
+    // so that each bed file is run with every ontology
     fg_channel.combine(gene_set_channel)
+    .map { meta1, fg, meta2, ont ->
+        tuple(meta1 + meta2, fg, ont)
+    }
     .set { combined_input }
     combined_input.view()
 
@@ -57,6 +61,16 @@ workflow {
         combined_input,
         bg_channel
     )
+
+    
+    // combine the output into a string
+    all_results = LOCAL_GREAT.out.results
+        .map { meta, res -> res}
+        .collect()
+
+    all_results.view()
+    COMBINE_GREAT_RESULTS(all_results)
+        
 }
 
 /*

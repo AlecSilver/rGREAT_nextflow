@@ -1,3 +1,4 @@
 ﻿sample,path
-8wk_male,./assets/beds/8wk_MALE_STRONG.bed
-8wk_female,./assets/beds/8wk_FEMALE_STRONG.bed
+test_1,./assets/beds/random_regions_1.bed
+test_2,./assets/beds/random_regions_2.bed
+test_3,./assets/beds/random_regions_3.bed
