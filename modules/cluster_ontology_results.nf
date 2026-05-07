@@ -13,6 +13,6 @@ process CLUSTER_ONTOLOGY_RESULTS {
 
     script:
     """
-    cluster_ontology_results.R ${combined_csv}
+    cluster_ontology_results.R ${combined_csv} ${params.padj_cutoff} ${params.cluster_height}
     """
 }

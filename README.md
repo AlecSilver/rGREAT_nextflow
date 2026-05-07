@@ -62,6 +62,8 @@ nextflow run nf-core/rgreat_local \
 | `--background` | Background BED file (e.g. consensus peak union) | `./assets/peak_union.bed` |
 | `--outdir` | Output directory | `./out` |
 | `--container` | Path to Singularity/Apptainer image | — |
+| `--padj_cutoff` | Adjusted p-value cutoff for filtering enriched terms before clustering | `0.05` |
+| `--cluster_height` | Dendrogram cut height (Jaccard distance) used to define term clusters | `0.7` |
 
 ## Outputs
 
