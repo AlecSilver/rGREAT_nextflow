@@ -94,17 +94,10 @@ out_path     <- args[5]
 ont_path     <- args[6]
 min_set_size <- if (length(args) >= 7 && nchar(args[7]) > 0) as.integer(args[7]) else 5L
 
-# Load gene set: built-in ontology strings pass through as-is;
+
 # file paths are loaded by extension (.rds or .gmt).
-ont <- switch(ont_str,
-  "BP" = ont_str,
-  "MF" = ont_str,
-  "CP" = ont_str,
-  {
-    ext <- tools::file_ext(ont_path)
-    if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
-  }
-)
+ext <- tools::file_ext(ont_path)
+if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
 
 
 
