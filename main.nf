@@ -37,15 +37,25 @@ include { LOCAL_GREAT  } from './modules/local_great.nf'
 workflow {
 
     main:
+
+    // Load the sample bed files
     fg_channel = Channel.fromSamplesheet("input")
-    fg_channel.view()
+    //fg_channel.view()
+
+    // Get list of additioinal gene sets to use
+    gene_set_channel = Channel.fromSamplesheet("gene_set_list")
+    //gene_set_channel.view()
+
+    fg_channel.combine(gene_set_channel)
+    .set { combined_input }
+    combined_input.view()
+
 
     bg_channel = Channel.value(file(params.background))
     
     LOCAL_GREAT(
-        fg_channel,
-        bg_channel,
-        "MF"
+        combined_input,
+        bg_channel
     )
 }
 

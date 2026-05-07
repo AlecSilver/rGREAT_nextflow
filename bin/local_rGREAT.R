@@ -91,19 +91,17 @@ bg_file <- args[2]
 ont_str <- args[3]
 out_prefix <- args[4]
 out_path <- args[5]
+ont_path <- args[6]
 
 #read in apropriate gene set
 ont <- switch( ont_str,
                "SG" = readRDS("ref/mm9_all_entrez_one_gene_per_set.rds") ,
-               "m1" = read_gmt("ref/GSEA_gene_sets/m1.all.v2026.1.Mm.entrez.gmt"),
-               "m2" = read_gmt("ref/GSEA_gene_sets/m2.all.v2026.1.Mm.entrez.gmt"),
-               "m3" = read_gmt("ref/GSEA_gene_sets/m3.all.v2026.1.Mm.entrez.gmt"),
-               "m5" = read_gmt("ref/GSEA_gene_sets/m5.all.v2026.1.Mm.entrez.gmt"),
-               "m7" = read_gmt("ref/GSEA_gene_sets/m7.all.v2026.1.Mm.entrez.gmt"),
-               "m8" = read_gmt("ref/GSEA_gene_sets/m8.all.v2026.1.Mm.entrez.gmt"),
-               "mh" = read_gmt("ref/GSEA_gene_sets/mh.all.v2026.1.Mm.entrez.gmt"),
-               ont_str # this covers BP, MF, and CP
+               "BP" = ont_str,
+               "MF" = ont_str,
+               "CP" = ont_str, 
+               read_gmt(ont_path)
 )
+
 
 
 cat("Loading regions...\n")
