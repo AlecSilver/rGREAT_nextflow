@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # runs the nextflow pipeline with the specified config file
-module load miniconda
-module load nextflow
+#module load miniconda
 #conda activate nf-core-env
-nextflow run -profile singularity main.nf -resume
+nextflow run -profile singularity,test main.nf -resume

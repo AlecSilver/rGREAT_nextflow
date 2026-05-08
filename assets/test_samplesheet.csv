@@ -1,3 +1,4 @@
 sample,path
-2wk_f,./assets/beds/2wk_FEMALE_STRONG.bed
-2wk_m,./assets/beds/2wk_MALE_STRONG.bed
+H3K9ac,assets/test_beds/ENCFF192IZP.bed
+H3K36me3,assets/test_beds/ENCFF633VDV.bed
+H3K9me3,assets/test_beds/ENCFF763XZB.bed
