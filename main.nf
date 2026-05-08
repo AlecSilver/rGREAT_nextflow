@@ -19,6 +19,7 @@ include { LOCAL_GREAT  } from './modules/local_great.nf'
 include { COMBINE_GREAT_RESULTS  } from './modules/combine_great_results.nf'
 include { CLUSTER_ONTOLOGY_RESULTS } from './modules/cluster_ontology_results.nf'
 include { GENE_LINKAGE_COMPILATION } from './modules/gene_linkage_compilation.nf'
+include { COMPILE_EXCEL_REPORT     } from './modules/compile_excel_report.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -79,6 +80,15 @@ workflow {
         .collect()
 
     GENE_LINKAGE_COMPILATION(all_gene_region_links)
+
+    COMPILE_EXCEL_REPORT(
+        COMBINE_GREAT_RESULTS.out.results,
+        CLUSTER_ONTOLOGY_RESULTS.out.clustered,
+        CLUSTER_ONTOLOGY_RESULTS.out.summary,
+        GENE_LINKAGE_COMPILATION.out.results,
+        file(params.ontology_descriptions),
+        file(params.column_descriptions)
+    )
 
 }
 
