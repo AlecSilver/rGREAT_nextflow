@@ -54,7 +54,7 @@ workflow {
         tuple(meta1 + meta2, fg, ont)
     }
     .set { combined_input }
-    combined_input.view()
+    
 
 
     bg_channel = Channel.value(file(params.background))
@@ -70,7 +70,7 @@ workflow {
         .map { meta, res -> res}
         .collect()
 
-    all_results.view()
+    
     COMBINE_GREAT_RESULTS(all_results)
 
     CLUSTER_ONTOLOGY_RESULTS(COMBINE_GREAT_RESULTS.out.results)

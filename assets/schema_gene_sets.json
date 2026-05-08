@@ -9,8 +9,8 @@
     "properties": {
       "ontology_name": {
         "type": "string",
-        "pattern": "^\\S+$",
-        "errorMessage": "ontology_name must be provided and cannot contain spaces",
+        "pattern": "^[^\\s_]+$",
+        "errorMessage": "ontology_name must be provided and cannot contain spaces or underscores",
         "meta": ["ontology_name"]
       },
       "path": {
