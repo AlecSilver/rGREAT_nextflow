@@ -18,6 +18,7 @@ include { fromSamplesheet } from 'plugin/nf-validation'
 include { LOCAL_GREAT  } from './modules/local_great.nf'
 include { COMBINE_GREAT_RESULTS  } from './modules/combine_great_results.nf'
 include { CLUSTER_ONTOLOGY_RESULTS } from './modules/cluster_ontology_results.nf'
+include { GENE_LINKAGE_COMPILATION } from './modules/gene_linkage_compilation.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -73,6 +74,11 @@ workflow {
     COMBINE_GREAT_RESULTS(all_results)
 
     CLUSTER_ONTOLOGY_RESULTS(COMBINE_GREAT_RESULTS.out.results)
+
+    all_gene_region_links = LOCAL_GREAT.out.gene_region_links
+        .collect()
+
+    GENE_LINKAGE_COMPILATION(all_gene_region_links)
 
 }
 

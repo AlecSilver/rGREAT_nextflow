@@ -1,4 +1,15 @@
-﻿sample,path
+sample,path
 2wk_f,./assets/beds/2wk_FEMALE_STRONG.bed
+2wk_m,./assets/beds/2wk_MALE_STRONG.bed
 3wk_f,./assets/beds/3wk_FEMALE_STRONG.bed
-
+3wk_m,./assets/beds/3wk_MALE_STRONG.bed
+4wk_f,./assets/beds/4wk_FEMALE_STRONG.bed
+4wk_m,./assets/beds/4wk_MALE_STRONG.bed
+4wk2days_f,./assets/beds/4wk2days_FEMALE_STRONG.bed
+4wk2days_m,./assets/beds/4wk2days_MALE_STRONG.bed
+5wk_f,./assets/beds/5wk_FEMALE_STRONG.bed
+5wk_m,./assets/beds/5wk_MALE_STRONG.bed
+6wk_f,./assets/beds/6wk_FEMALE_STRONG.bed
+6wk_m,./assets/beds/6wk_MALE_STRONG.bed
+8wk_f,./assets/beds/8wk_FEMALE_STRONG.bed
+8wk_m,./assets/beds/8wk_MALE_STRONG.bed
