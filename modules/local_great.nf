@@ -22,10 +22,11 @@ process LOCAL_GREAT {
 
 
     script:
+    def bg_arg = bg_bed ? bg_bed : "NULL"
     """
     local_rGREAT.R \
         ${fg_bed} \
-        ${bg_bed} \
+        ${bg_arg} \
         ${meta.ontology_name} \
         ${meta.sample} \
         ./ \

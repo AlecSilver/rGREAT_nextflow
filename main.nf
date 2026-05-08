@@ -58,7 +58,7 @@ workflow {
     
 
 
-    bg_channel = Channel.value(file(params.background))
+    bg_channel = params.background ? Channel.value(file(params.background)) : Channel.value([])
     
     LOCAL_GREAT(
         combined_input,

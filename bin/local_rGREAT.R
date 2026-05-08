@@ -94,6 +94,8 @@ out_path     <- args[5]
 ont_path     <- args[6]
 min_set_size <- if (length(args) >= 7 && nchar(args[7]) > 0) as.integer(args[7]) else 5L
 
+use_bg <- !is.null(bg_file) && bg_file != "NULL" && nchar(bg_file) > 0
+
 
 # file paths are loaded by extension (.rds or .gmt).
 ext <- tools::file_ext(ont_path)
@@ -104,8 +106,12 @@ ont <- if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
 cat("Loading regions...\n")
 
 fg <- import(fg_file)
-bg <- import(bg_file) %>% # remove sex chromosomes if present
-  dropSeqlevels( c("chrX", "chrY"), pruning.mode = "coarse")
+bg <- if (use_bg) {
+  import(bg_file) %>%
+    dropSeqlevels(c("chrX", "chrY"), pruning.mode = "coarse")
+} else {
+  NULL
+}
 
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 
