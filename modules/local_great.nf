@@ -31,6 +31,7 @@ process LOCAL_GREAT {
         ${meta.sample} \
         ./ \
         ${set_path} \
-        ${meta.min_set_size ?: 5}
+        ${meta.min_set_size ?: 5} \
+        ${params.genome}
     """
 }

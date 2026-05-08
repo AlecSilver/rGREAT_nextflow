@@ -59,7 +59,8 @@ nextflow run nf-core/rgreat_local \
 |---|---|---|
 | `--input` | Path to sample samplesheet CSV | `samplesheet.csv` |
 | `--gene_set_list` | Path to gene set samplesheet CSV | `gene_set_list.csv` |
-| `--background` | Background BED file (e.g. consensus peak union) | `./assets/peak_union.bed` |
+| `--background` | Background BED file (e.g. consensus peak union); omit to use whole-genome background | `null` |
+| `--genome` | Mouse genome assembly for TSS annotation (`mm9` or `mm10`) | `mm9` |
 | `--outdir` | Output directory | `./out` |
 | `--container` | Path to Singularity/Apptainer image | — |
 | `--padj_cutoff` | Adjusted p-value cutoff for filtering enriched terms before clustering | `0.05` |

@@ -5,6 +5,7 @@ suppressPackageStartupMessages({
   library(rGREAT)
   library(rtracklayer)
   library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+  library(TxDb.Mmusculus.UCSC.mm10.knownGene)
   library(org.Mm.eg.db)
   #source("bin/gene_linkage.R") 
 })
@@ -93,6 +94,9 @@ out_prefix   <- args[4]
 out_path     <- args[5]
 ont_path     <- args[6]
 min_set_size <- if (length(args) >= 7 && nchar(args[7]) > 0) as.integer(args[7]) else 5L
+genome       <- if (length(args) >= 8 && nchar(args[8]) > 0) args[8] else "mm9"
+
+if (!genome %in% c("mm9", "mm10")) stop(paste("Unsupported genome:", genome))
 
 use_bg <- !is.null(bg_file) && bg_file != "NULL" && nchar(bg_file) > 0
 
@@ -113,7 +117,7 @@ bg <- if (use_bg) {
   NULL
 }
 
-txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+txdb <- if (genome == "mm10") TxDb.Mmusculus.UCSC.mm10.knownGene else TxDb.Mmusculus.UCSC.mm9.knownGene
 
 cat("Running GREAT locally...\n")
 
@@ -122,7 +126,7 @@ res <- great(
   gr                = fg,
   background        = bg,
   gene_sets         = ont,
-  tss_source        = "mm9",
+  tss_source        = genome,
   min_gene_set_size = min_set_size
 )
 
