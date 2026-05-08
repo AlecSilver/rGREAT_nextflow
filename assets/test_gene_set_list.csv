@@ -1,0 +1,3 @@
+ontology_name,path,min_set_size
+MH,./assets/gene_sets/mh.all.v2026.1.Mm.entrez.gmt,5
+M1,./assets/gene_sets/m1.all.v2026.1.Mm.entrez.gmt,5

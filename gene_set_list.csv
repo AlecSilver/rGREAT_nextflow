@@ -1,0 +1,12 @@
+ontology_name,path,min_set_size
+MH,./assets/gene_sets/mh.all.v2026.1.Mm.entrez.gmt,5
+M1,./assets/gene_sets/m1.all.v2026.1.Mm.entrez.gmt,5
+M2,./assets/gene_sets/m2.all.v2026.1.Mm.entrez.gmt,5
+M3,./assets/gene_sets/m3.all.v2026.1.Mm.entrez.gmt,5
+M5,./assets/gene_sets/m5.all.v2026.1.Mm.entrez.gmt,5
+GOBP,./assets/gene_sets/m5.go.bp.v2026.1.Mm.entrez.gmt,5
+GOCC,./assets/gene_sets/m5.go.cc.v2026.1.Mm.entrez.gmt,5
+GOMF,./assets/gene_sets/m5.go.mf.v2026.1.Mm.entrez.gmt,5
+M7,./assets/gene_sets/m7.all.v2026.1.Mm.entrez.gmt,5
+M8,./assets/gene_sets/m8.all.v2026.1.Mm.entrez.gmt,5
+SingleGene,./assets/gene_sets/mm9_all_entrez_one_gene_per_set.rds,1

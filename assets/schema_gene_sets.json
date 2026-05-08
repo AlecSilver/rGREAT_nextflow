@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "sampe_input",
+  "title": "nf-core/rnaseq pipeline - params.input schema",
+  "description": "Schema for the file provided with params.input",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "ontology_name": {
+        "type": "string",
+        "pattern": "^[^\\s_]+$",
+        "errorMessage": "ontology_name must be provided and cannot contain spaces or underscores",
+        "meta": ["ontology_name"]
+      },
+      "path": {
+        "type": "string",
+        "pattern": "\\.(gmt|rds)$",
+        "format": "file-path",
+        "errorMessage": "Gene set file must have extension '.gmt' or '.rds'"
+      },
+      "min_set_size": {
+        "type": "integer",
+        "default": 5,
+        "minimum": 1,
+        "errorMessage": "min_set_size must be a positive integer",
+        "meta": ["min_set_size"]
+      }
+    },
+    "required": ["ontology_name", "path"]
+  }
+}

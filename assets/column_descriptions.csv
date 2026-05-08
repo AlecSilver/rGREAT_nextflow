@@ -1,0 +1,25 @@
+Column,Description
+Condition,Age and Bias the peaks were derived from
+Age,Age of mice
+Bias,Male or Female biased ATAC peaks used
+Ontology,Ontology database source for the term (e.g. GO Biological Process
+id,Unique identifier for the ontology term (e.g. GO:0006915)
+description,Human-readable name/label of the ontology term
+cluster,Cluster ID assigned by semantic similarity clustering performed across all conditions simultaneously
+cluster_rep,Representative term for the cluster; selected as the term with the lowest p_adjust (binomial); p_adjust_hyper used as tiebreaker
+Condition_Top_5_Ranked,Indicates whether this term ranks in the top 5 enriched terms for the given condition
+Rank_In_Condition,Rank of this term withinthe top 5 count
+genome_fraction,Fraction of the genome covered by the genomic regions tested
+observed_region_hits,Number of input genomic regions overlapping the gene set associated with this term
+fold_enrichment,Fold enrichment of region hits over expectation based on genome coverage (binomial test)
+p_value,Nominal p-value from the binomial test of region-level enrichment
+p_adjust,Multiple-testing adjusted p-value (FDR) from the binomial test (primary statistic used for cluster representative selection) 
+mean_tss_dist,Mean distance of input regions to the transcription start sites of genes in the term's gene set
+observed_gene_hits,Number of genes in the term's gene set overlapping with genes near the input regions
+gene_set_size,Total number of genes annotated to this ontology term
+fold_enrichment_hyper,Fold enrichment based on gene hits over expectation (hypergeometric test)
+p_value_hyper,Nominal p-value from the hypergeometric test of gene-level enrichment
+p_adjust_hyper,Multiple-testing adjusted p-value (FDR) from the hypergeometric test (used as tiebreaker for cluster representative selection)
+genes,List of gene symbols in the term's gene set that overlap with the input regions
+regions,Genomic regions from the input that contributed to the enrichment of this term
+source_file,Path or name of the source file from which this row's data originated
