@@ -25,14 +25,11 @@ young_bias,./data/young_bias_peaks.bed
 old_bias,./data/old_bias_peaks.bed
 ```
 
-**`gene_set_list.csv`** — one row per ontology or custom gene set. `path` is required for `.gmt`/`.rds` files and left empty for built-in rGREAT ontologies (`BP`, `MF`, `CP`). `min_set_size` defaults to 5 if omitted.
+**`gene_set_list.csv`** — one row per ontology or custom gene set. Set `path` to chosen `.gmt` or `.rds` files . `min_set_size` defaults to 5 if omitted.
 
 ```csv
 ontology_name,path,min_set_size
-BP,,
-MF,,
-CP,,
-MH,./assets/GSEA_gene_sets/mh.all.v2026.1.Mm.entrez.gmt,
+MH,./assets/GSEA_gene_sets/mh.all.v2026.1.Mm.entrez.gmt,5
 MySingleGenes,./assets/my_sets.rds,1
 ```
 
@@ -43,10 +40,15 @@ MySingleGenes,./assets/my_sets.rds,1
 | `min_set_size` | Minimum number of genes required in a gene set (default: 5) |
 
 ### Running the pipeline
+Example test case can be run with
+```bash
+nextflow run -profile singularity,cluster,test main.nf
+```
+Or the full chosen pipeline with
 
 ```bash
-nextflow run nf-core/rgreat_local \
-   -profile singularity \
+nextflow run main.nf \
+   -profile singularity,cluster \
    --input samplesheet.csv \
    --gene_set_list gene_set_list.csv \
    --background assets/peak_union.bed \
@@ -62,7 +64,6 @@ nextflow run nf-core/rgreat_local \
 | `--background` | Background BED file (e.g. consensus peak union); omit to use whole-genome background | `null` |
 | `--genome` | Mouse genome assembly for TSS annotation (`mm9` or `mm10`) | `mm9` |
 | `--outdir` | Output directory | `./out` |
-| `--container` | Path to Singularity/Apptainer image | — |
 | `--padj_cutoff` | Adjusted p-value cutoff for filtering enriched terms before clustering | `0.05` |
 | `--cluster_height` | Dendrogram cut height (Jaccard distance) used to define term clusters | `0.7` |
 
