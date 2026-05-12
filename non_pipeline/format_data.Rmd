@@ -1,0 +1,201 @@
+---
+title: "ATAC site consensus peak summerization"
+author: "Alec Silver"
+date: "2026-02-10"
+output: html_document
+---
+
+
+```{r pressure, echo=FALSE}
+library(tidyverse)
+library(readxl)
+
+settings <- config::get()
+
+
+#read the raw data, but normalized by width, this might not be the correct one
+full_path <- paste0(settings$home_path, settings$bias_peaks_path)
+data <- read_excel(full_path)
+```
+
+```{r}
+#get rid of irellevent cols
+df <- data |>
+  select(- matches("\\..+")) |> #get rid of data cols
+  select(c("seqnames", "start", "end"), matches("_MuMerge_")) |>
+  rename( chr = seqnames)  |>
+  tibble::rowid_to_column( "ID")
+```
+```{r}
+#now convert to long format
+#and add some data cols from the names
+pattern <- "\\d+_Male_([^_]+).+_MuMerge_(.+$)"
+# example name
+# 1_Male_2wk_ATAC_vs_Female_2wk_ATAC_MuMerge_CSAW
+
+
+long_df <- pivot_longer(df,  matches("_MuMerge_")) |>
+  extract(
+    col = name,
+    into = c("age", "method"),
+    regex = pattern,
+    remove = FALSE
+)
+```
+
+
+```{r}
+
+# returns list of peaks that match min requirements
+# also removes X and Y chromosomes
+build_peak_counts <- function(long_df, min_peak_consensus) {
+  final <- long_df %>%
+    rename( bias = value) %>%
+    group_by(ID,chr, start, end, age, bias) %>%
+    summarise(
+      n = n()
+    ) %>%
+    filter(
+      chr != 'chrY',
+      chr != 'chrX',
+      bias == 'UP_STRONG' | bias == 'DOWN_STRONG',
+      n >= min_peak_consensus
+    ) %>%
+    mutate(bias = str_replace_all(bias, "UP", "MALE")) |> 
+    mutate(bias = str_replace_all(bias, "DOWN", "FEMALE")) 
+  return(final)
+}
+final <- build_peak_counts(long_df, settings$min_peak_consensus)
+
+full_path <- paste0(settings$home_path, settings$peaks_out_path)
+write_csv(final, full_path)
+```
+
+
+## statistics
+### For Consensus Peaks
+
+```{r}
+make_bar_plot <- function(df, title) {
+  # plot number of peaks in each condition
+  counts_table <- df %>%
+    mutate(age = str_replace(age, "4wk2days", "4wk2d")) %>%
+    group_by(bias, age) %>%
+    summarise(count = n())
+  counts_table$age <- factor(counts_table$age, levels = c("2wk","3wk","4wk","4wk2d","5wk","6wk","8wk"))
+  
+  p <- ggplot(counts_table, aes(age, count, fill = bias)) +
+    geom_bar(position = "dodge", stat = "identity") + 
+    scale_x_discrete( drop = FALSE) +
+    ggtitle(title)
+  
+  return(p)
+}
+
+
+```
+
+```{r}
+for (min_c in 1:6) {
+  df <- build_peak_counts(long_df, min_c)
+  
+  #get the total number of unique peaks
+  num_unique <- df %>%
+    select(chr, start, end) %>%
+    distinct() %>%
+    nrow()
+  
+  print( paste("Number of distinct peaks for min consensus", min_c, ":", num_unique))
+  
+  p <- make_bar_plot(df, paste("Number of Biased peaks called by", min_c, "or more algorithms"))
+  print(p)
+  
+  fig_path <- paste0("Figs/Data_Formatting/consensus_", min_c, ".png")
+  ggsave(p, file = fig_path, height = 6, width = 10)
+
+}
+
+```
+### For Individual Peak Calling Methods
+```{r}
+# same as last method, but only selects peaks from a single method
+build_peak_counts_single_method <- function(long_df, chosen_method) {
+  final <- long_df %>%
+    rename( bias = value) %>%
+    filter(
+      chr != 'chrY',
+      chr != 'chrX',
+      bias == 'UP_STRONG' | bias == 'DOWN_STRONG',
+      chosen_method == method
+    ) %>%
+    mutate(bias = str_replace_all(bias, "UP", "MALE")) |> 
+    mutate(bias = str_replace_all(bias, "DOWN", "FEMALE")) 
+  return(final)
+}
+```
+
+```{r}
+for (chosen_method in unique(long_df$method)) {
+  df <- build_peak_counts_single_method(long_df, chosen_method)
+  
+  #get the total number of unique peaks
+  num_unique <- df %>%
+    select(chr, start, end) %>%
+    distinct() %>%
+    nrow()
+  
+  print( paste("Number of distinct peaks for ", chosen_method, ":", num_unique))
+  
+  p <- make_bar_plot(df, paste("Number of Biased peaks called by", chosen_method))
+  print(p)
+  
+  fig_path <- paste0("Figs/Data_Formatting/", chosen_method, ".png")
+  ggsave(p, file = fig_path, height = 6, width = 10)
+  
+
+}
+
+```
+
+### Combined Figure: Consensus 1, 3, 5 + CSAW, DESEQ2, DIFFREPS200
+
+
+```{r}
+library(patchwork)
+library(cowplot)
+
+# Build all six plots
+consensus_levels <- c(1, 3, 5)
+consensus_plots <- lapply(consensus_levels, function(min_c) {
+  df <- build_peak_counts(long_df, min_c)
+  make_bar_plot(df, paste("Consensus ≥", min_c))
+})
+
+target_methods <- c("CSAW", "DESEQ2", "DIFFREPS_200")
+method_plots <- lapply(target_methods, function(m) {
+  df <- build_peak_counts_single_method(long_df, m)
+  make_bar_plot(df, m)
+})
+```
+```{r}
+# Extract legend as horizontal
+shared_legend <- get_legend(consensus_plots[[1]] + guides(fill = guide_legend(nrow = 1)) ) 
+  
+
+# Strip legends from all panels
+all_plots_no_legend <- lapply(c(consensus_plots, method_plots), 
+                               function(p) p + theme(legend.position = "none"))
+
+# Arrange the 6 panels in a 2x3 grid
+grid <- plot_grid(plotlist = all_plots_no_legend, nrow = 2)
+
+# Stack grid on top, legend on bottom
+combined_fig <- plot_grid(grid, shared_legend, ncol = 1, rel_heights = c(1, 0.1)) 
+
+combined_fig <- combined_fig + plot_annotation(title = "Biased Peak Counts: Consensus Thresholds and Individual Methods")
+
+print(combined_fig)
+ggsave(combined_fig, file = "Figs/Data_Formatting/combined_consensus_methods.png",
+       height = 7, width = 11)
+```
+

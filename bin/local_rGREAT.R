@@ -105,6 +105,17 @@ use_bg <- !is.null(bg_file) && bg_file != "NULL" && nchar(bg_file) > 0
 ext <- tools::file_ext(ont_path)
 ont <- if (ext == "rds") readRDS(ont_path) else read_gmt(ont_path)
 
+# parse GMT descriptions (second field per line); not available for .rds sets
+gmt_descriptions <- if (ext == "gmt") {
+  lines <- readLines(ont_path)
+  tibble(
+    id          = sub("\t.*", "", lines),
+    description = sub("^[^\t]*\t([^\t]*)\t.*", "\\1", lines)
+  )
+} else {
+  NULL
+}
+
 
 
 cat("Loading regions...\n")
@@ -132,6 +143,12 @@ res <- great(
 
 
 df <- getEnrichmentTables(res)
+
+if (!is.null(gmt_descriptions)) {
+  df <- df %>% left_join(gmt_descriptions, by = "id") %>%
+    relocate(description, .after = id)
+}
+
 cat("Adding connected genes...\n")
 
 

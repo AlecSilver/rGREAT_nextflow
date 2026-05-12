@@ -9,4 +9,4 @@ GOCC,./assets/gene_sets/m5.go.cc.v2026.1.Mm.entrez.gmt,5
 GOMF,./assets/gene_sets/m5.go.mf.v2026.1.Mm.entrez.gmt,5
 M7,./assets/gene_sets/m7.all.v2026.1.Mm.entrez.gmt,5
 M8,./assets/gene_sets/m8.all.v2026.1.Mm.entrez.gmt,5
-SingleGene,./assets/gene_sets/mm9_all_entrez_one_gene_per_set.rds,1
+SingleGene,./assets/gene_sets/mm9_all_symbol_one_gene_per_set.rds,1
