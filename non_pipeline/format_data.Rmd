@@ -8,11 +8,9 @@ output: html_document
 
 ```{r settings}
 # ── User settings ─────────────────────────────────────────────────────────────
-home_path         <- "/path/to/project/"   # trailing slash required
-bias_peaks_path   <- "data/bias_peaks.xlsx" # path to input Excel file, relative to home_path
-peaks_out_path    <- "data/consensus_peaks.csv" # output CSV path, relative to home_path
-min_peak_consensus <- 3                    # minimum number of algorithms that must agree on a peak
-path_to_bed_output <- "../out/beds/"            # directory to save bed files, relative to this script
+bias_peaks_path   <- "/path/to/bias_peaks.xlsx"  # absolute path to input Excel file
+out_path          <- "/path/to/output/"           # root output directory (trailing slash required)
+min_peak_consensus <- 3                           # minimum number of algorithms that must agree on a peak
 # ──────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -20,8 +18,12 @@ path_to_bed_output <- "../out/beds/"            # directory to save bed files, r
 library(tidyverse)
 library(readxl)
 
-full_path <- paste0(home_path, bias_peaks_path)
-data <- read_excel(full_path)
+beds_dir <- paste0(out_path, "beds/")
+figs_dir <- paste0(out_path, "figs/")
+dir.create(beds_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(figs_dir, recursive = TRUE, showWarnings = FALSE)
+
+data <- read_excel(bias_peaks_path)
 ```
 
 ```{r}
@@ -73,7 +75,7 @@ build_peak_counts <- function(long_df, min_peak_consensus) {
 }
 final <- build_peak_counts(long_df, min_peak_consensus)
 
-write_csv(final, paste0(home_path, peaks_out_path))
+write_csv(final, paste0(out_path, "consensus_peaks.csv"))
 ```
 ### Save bed files for downstream analysis
 ```{r}
@@ -87,7 +89,7 @@ for(group in unique(bed_df$group_id)) {
   bed_data <- bed_df |>
     filter(group_id == group) |>
     select(chr, start, end, ID)
-  filename <- paste0(path_to_bed_output, group,".bed")
+  filename <- paste0(beds_dir, group, ".bed")
   write_delim(bed_data, filename, delim = "\t", col_names = FALSE)
 }
 ```
@@ -130,8 +132,7 @@ for (min_c in 1:6) {
   p <- make_bar_plot(df, paste("Number of Biased peaks called by", min_c, "or more algorithms"))
   print(p)
   
-  fig_path <- paste0("Figs/Data_Formatting/consensus_", min_c, ".png")
-  ggsave(p, file = fig_path, height = 6, width = 10)
+  ggsave(p, file = paste0(figs_dir, "consensus_", min_c, ".png"), height = 6, width = 10)
 
 }
 
@@ -169,8 +170,7 @@ for (chosen_method in unique(long_df$method)) {
   p <- make_bar_plot(df, paste("Number of Biased peaks called by", chosen_method))
   print(p)
   
-  fig_path <- paste0("Figs/Data_Formatting/", chosen_method, ".png")
-  ggsave(p, file = fig_path, height = 6, width = 10)
+  ggsave(p, file = paste0(figs_dir, chosen_method, ".png"), height = 6, width = 10)
   
 
 }
@@ -215,7 +215,7 @@ combined_fig <- plot_grid(grid, shared_legend, ncol = 1, rel_heights = c(1, 0.1)
 combined_fig <- combined_fig + plot_annotation(title = "Biased Peak Counts: Consensus Thresholds and Individual Methods")
 
 print(combined_fig)
-ggsave(combined_fig, file = "Figs/Data_Formatting/combined_consensus_methods.png",
+ggsave(combined_fig, file = paste0(figs_dir, "combined_consensus_methods.png"),
        height = 7, width = 11)
 ```
 
