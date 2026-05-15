@@ -8,8 +8,8 @@ output: html_document
 
 ```{r settings}
 # ── User settings ─────────────────────────────────────────────────────────────
-bias_peaks_path   <- "/path/to/bias_peaks.xlsx"  # absolute path to input Excel file
-out_path          <- "/path/to/output/"           # root output directory (trailing slash required)
+bias_peaks_path   <- "/projectnb/wax-es/alecs/final_files/rGREAT_nextflow/assets/G242_G241_G228_ATAC_v4_all_groups_together_overlap.xlsx"  # absolute path to input Excel file
+out_path          <- "/projectnb/wax-es/alecs/final_files/rGREAT_nextflow/assets/"           # root output directory (trailing slash required)
 min_peak_consensus <- 3                           # minimum number of algorithms that must agree on a peak
 # ──────────────────────────────────────────────────────────────────────────────
 ```
@@ -82,9 +82,9 @@ write_csv(final, paste0(out_path, "consensus_peaks.csv"))
 bed_df <- final |>
   mutate(
     ID = paste0(ID,"ID"),
-    group_id = paste0(age, "_", bias))
-```
-```
+    group_id = paste0(age, "_", bias)) %>%
+  ungroup()
+
 for(group in unique(bed_df$group_id)) {
   bed_data <- bed_df |>
     filter(group_id == group) |>
