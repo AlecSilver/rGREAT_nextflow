@@ -16,7 +16,7 @@ process LOCAL_GREAT {
 
     output:
     tuple val(meta), path("${meta.sample}_${meta.ontology_name}_localGREAT.tsv"), emit: results
-    path "${meta.sample}_${meta.ontology_name}_gene_region_links.tsv", emit: gene_region_links
+    tuple val(meta), path("${meta.sample}_${meta.ontology_name}_gene_region_links.tsv"), emit: gene_region_links
     path "${meta.sample}_${meta.ontology_name}_great_job.rds", emit: great_job
 
 

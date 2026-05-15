@@ -76,7 +76,12 @@ workflow {
 
     CLUSTER_ONTOLOGY_RESULTS(COMBINE_GREAT_RESULTS.out.results)
 
+    // Gene-region linkage is genome-based and identical across gene sets for the
+    // same sample, so one file per sample is sufficient.
     all_gene_region_links = LOCAL_GREAT.out.gene_region_links
+        .map { meta, f -> tuple(meta.sample, f) }
+        .groupTuple()
+        .map { sample, files -> files[0] }
         .collect()
 
     GENE_LINKAGE_COMPILATION(all_gene_region_links)

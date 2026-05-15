@@ -6,15 +6,21 @@ output: html_document
 ---
 
 
-```{r pressure, echo=FALSE}
+```{r settings}
+# ── User settings ─────────────────────────────────────────────────────────────
+home_path         <- "/path/to/project/"   # trailing slash required
+bias_peaks_path   <- "data/bias_peaks.xlsx" # path to input Excel file, relative to home_path
+peaks_out_path    <- "data/consensus_peaks.csv" # output CSV path, relative to home_path
+min_peak_consensus <- 3                    # minimum number of algorithms that must agree on a peak
+path_to_bed_output <- "../out/beds/"            # directory to save bed files, relative to this script
+# ──────────────────────────────────────────────────────────────────────────────
+```
+
+```{r load, echo=FALSE}
 library(tidyverse)
 library(readxl)
 
-settings <- config::get()
-
-
-#read the raw data, but normalized by width, this might not be the correct one
-full_path <- paste0(settings$home_path, settings$bias_peaks_path)
+full_path <- paste0(home_path, bias_peaks_path)
 data <- read_excel(full_path)
 ```
 
@@ -65,12 +71,26 @@ build_peak_counts <- function(long_df, min_peak_consensus) {
     mutate(bias = str_replace_all(bias, "DOWN", "FEMALE")) 
   return(final)
 }
-final <- build_peak_counts(long_df, settings$min_peak_consensus)
+final <- build_peak_counts(long_df, min_peak_consensus)
 
-full_path <- paste0(settings$home_path, settings$peaks_out_path)
-write_csv(final, full_path)
+write_csv(final, paste0(home_path, peaks_out_path))
 ```
-
+### Save bed files for downstream analysis
+```{r}
+bed_df <- final |>
+  mutate(
+    ID = paste0(ID,"ID"),
+    group_id = paste0(age, "_", bias))
+```
+```
+for(group in unique(bed_df$group_id)) {
+  bed_data <- bed_df |>
+    filter(group_id == group) |>
+    select(chr, start, end, ID)
+  filename <- paste0(path_to_bed_output, group,".bed")
+  write_delim(bed_data, filename, delim = "\t", col_names = FALSE)
+}
+```
 
 ## statistics
 ### For Consensus Peaks
