@@ -81,14 +81,13 @@ bed_df <- final |>
   mutate(
     ID = paste0(ID,"ID"),
     group_id = paste0(age, "_", bias))
-```
-```
+
 for(group in unique(bed_df$group_id)) {
   bed_data <- bed_df |>
     filter(group_id == group) |>
     select(chr, start, end, ID)
   filename <- paste0(path_to_bed_output, group,".bed")
-  write_delim(bed_data, filename, delim = "\t", col_names = FALSE)
+  write_delim(bed_data, filename, delim = "\t", col_names = FALSE, row_names = FALSE)
 }
 ```
 
